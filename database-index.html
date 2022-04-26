@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Database Index &ndash; Hung Hoang</title>
+
+    <!-- Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Social -->
+    <meta property="article:author" content="Hung Hoang" />
+    <meta property="article:section" content="Database" />
+    <meta property="article:published_time" content="2021-11-30" />
+
+    <meta property="og:type" content="article"/>
+    <meta property="og:title" content="Database Index"/>
+    <meta property="og:description" content="People is often said that indexing is a go-to technique to process efficiently queries in database. This post is for summarizing what database index is and revisiting hash and B+Tree. Index is a data structure that organizes records to optimize certain kinds of retrieval operations. We may create index …"/>
+    <meta property="og:site_name" content="Hung Hoang" />
+    <meta property="og:url" content="http://localhost:8000/database-index.html"/>
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Database Index">
+    <meta name="twitter:description" content="People is often said that indexing is a go-to technique to process efficiently queries in database. This post is for summarizing what database index is and revisiting hash and B+Tree. Index is a data structure that organizes records to optimize certain kinds of retrieval operations. We may create index …">
+    <meta name="twitter:url" content="http://localhost:8000/database-index.html">
+
+    <!-- Feed -->
+
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:regular,bold">
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/css/w3.css">
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/css/style.css">
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/css/jqcloud.css">
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/css/pygments-highlight-github.css">
+
+    <!-- Icon -->
+
+    <!-- JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="http://localhost:8000/theme/js/jqcloud.min.js"></script>
+  </head>
+
+  <body>
+    <div class="w3-row w3-card w3-white">
+      <header id="header">
+        <a href="http://localhost:8000" id="header-logo" title="Home">HH</a>
+        <nav id="header-menu">
+          <ul>
+            <li class="w3-bottombar w3-border-white w3-hover-border-green"><a href="http://localhost:8000/pages/about.html">About</a></li>
+            <li class="w3-bottombar w3-border-white w3-hover-border-green"><a href="http://localhost:8000/pages/contact.html">Contact</a></li>
+          </ul>
+        </nav>
+      </header>
+    </div>
+
+
+
+    <br><br><br>
+
+    <article>
+      <header class="w3-container col-main">
+        <h1>Database Index</h1>
+        <div class="post-info">
+          <div class="w3-opacity w3-margin-right w3-margin-bottom" style="flex-grow: 1;">
+            <span><time datetime="2021-11-30T10:00:00+07:00">Tue 30 November 2021</time> in <a href="http://localhost:8000/category/database.html" title="All articles in category Database">Database</a></span>
+          </div>
+        </div>
+      </header>
+
+      <br>
+
+
+      <div class="col-main w3-container">
+        <section id="content">
+          <p>People is often said that indexing is a go-to technique to process efficiently queries in database. This post is for summarizing what database index is and revisiting hash and B+Tree.</p>
+<p>Index is a data structure that organizes records to optimize certain kinds of retrieval operations. We may create index on a field of the table then retrieve all records that satisfy search conditions on <code>search-key</code> field. Without index, our query would end up scanning linearly the entire content of the table to fetch only one or a few records.</p>
+<p>In this post, I'd like to summarize the performance and use cases of two common indexing techniques: <strong>Hash index</strong> and <strong>B+tree</strong></p>
+<h2>Hash index</h2>
+<p>This technique is widely used for creating indices in <em>main memory</em> because its fast retrieval by nature. It has average O(1) operation complexity and O(n) storage complexity.
+In many books, people use the term <code>bucket</code> to denote a unit of storage that stores one or more records
+There are two things to discuss when it comes to hashing:</p>
+<ul>
+<li>Hash function: maps search keys (as its input) to an integer representing that key in the bucket.</li>
+<li>Hashing scheme: how to deal with key collision after hashing.</li>
+</ul>
+<p><img alt="hash function" src="https://dev-to-uploads.s3.amazonaws.com/uploads/articles/khkm46v11z8o3geabglx.png"></p>
+<p>Some people ask: why collision ? Does a <a href="https://en.wikipedia.org/wiki/Perfect_hash_function">perfect hash function</a> ever exist ? In fact, let's say your keys is an infinite set, it's impossible to map them into a set of 32-bit integers without having no collision. There should be a trade-off between computation and collision rate.</p>
+<p>There are a few hashing scheme worth mentioning: <a href="https://en.wikipedia.org/wiki/Linear_probing#:~:text=Linear%20probing%20is%20a%20scheme,by%20Gene%20Amdahl%2C%20Elaine%20M.">linear probing</a>, <a href="https://www.tutorialspoint.com/hashing-with-chaining-in-data-structure">chained hashing</a> and <a href="https://en.wikipedia.org/wiki/Extendible_hashing">extendible hashing</a>. Lookup/insert/delete algorithms vary by hashing scheme, for example, chained hashing deal with key collisions by placing elements have the same hash value in the same bucket. </p>
+<h3>Pros</h3>
+<ul>
+<li>Hash index is suitable for equality or primary key lookup. Queries can benefit from hash index to get amortized O(1) lookup cost. For example: <code>SELECT name, id FROM student WHERE id = '1315';</code></li>
+</ul>
+<h3>Cons</h3>
+<p>Hash table has some limitations:</p>
+<ul>
+<li>Range queries are not efficient. Hash table is based on uniform distribution. In other words, you have no control of where an index entry is going to be placed.</li>
+<li>Low scalability: performance of lookup operation can degrade when there a lot of collisions and it requires to resize the hash table then rehash existing index entries.</li>
+</ul>
+<h2>B+Tree</h2>
+<p>This is a self-balancing tree data structure that keeps data in sorted order and allows fast search within each node, typically using binary search.
+B+Tree is a standard index implementation in almost all relational database system.</p>
+<p>B+Tree is basically a M-way search tree that have the following structure:</p>
+<ul>
+<li>perfectly balance: leaf nodes always have the same height.</li>
+<li>every inner node other than the root is at least half full (M/2 − 1 &lt;= num of keys &lt;= M − 1).</li>
+<li>every inner node with k keys has k+1 non-null children.</li>
+</ul>
+<p>Every node of the tree has an array of sorted key-value pairs. The key-value pair is constructed from (search-key value, pointer) for root and inner nodes. Leaf node values can be 2 possibilities:</p>
+<ul>
+<li>the actual record</li>
+<li>the pointer to actual record</li>
+</ul>
+<h3>Lookup a value <em>v</em></h3>
+<ul>
+<li>Start with root node</li>
+<li>While node is not a leaf node, we do:<ul>
+<li>Find the smallest Ki where Ki &gt;= v</li>
+<li>If Ki == v: set current node to the node pointed by Pi+1</li>
+<li>Otherwise, set current node to node pointed by Pi</li>
+</ul>
+</li>
+</ul>
+<p><img alt="Look up a key using B+Tree index" src="https://dev-to-uploads.s3.amazonaws.com/uploads/articles/xwhs1v0ck8o3ddoibfzw.png"></p>
+<h3>Duplicate keys</h3>
+<p>In general, search-key can be duplicate, to solve this, most database implementations come up with composite search key. For example, we want to create an index on <code>student_name</code> then our composite search key should be (student_name, Ap) where Ap is the primary key of the table.</p>
+<h3>Pros</h3>
+<p>There're two major pros that B+tree offers:</p>
+<ul>
+<li>
+<p>Minimizing I/O operations:</p>
+<ul>
+<li>Reduced height: B+Tree has quite large <a href="https://en.wikipedia.org/wiki/Branching_factor">branching factor</a> which makes the tree fat and short. The figure below illustrates a B+Tree with height of 2. As we can see nodes are spread out, it takes fewer nodes to traverse down to a leaf. The cost of looking up a single value is the height of the tree + 1 for the random access to the table</li>
+</ul>
+</li>
+<li>
+<p>Scalability:</p>
+<ul>
+<li>You have predictable performance for all cases, O(log(n)) in particular. For databases, it is usually more important than having better best or average case performance.</li>
+<li>The tree always remain balanced by its implementation. A B+Tree with n keys always has a depth of O(log(n)). Thus, the performance will not degrade if the database grows bigger. A four-level tree with a branching factor of 500 can store up to 256 TB provided that a page is size of 4KB.</li>
+</ul>
+</li>
+</ul>
+<p><img alt="Figure 2" src="https://dev-to-uploads.s3.amazonaws.com/uploads/articles/k6colaz4amph93f1ikpq.gif"></p>
+<ul>
+<li>B+Tree is most suited for range queries, for example <code>"SELECT * FROM student WHERE age &gt; 20 AND age &lt; 22"</code></li>
+</ul>
+<h2>Conclusion</h2>
+<p>Although hash index performs better in terms of exact match queries, B+Tree is arguably the most widely used index structure in RDBMS thanks to its consistent performance in overall and high scalability.</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="center">B+Tree</th>
+<th align="center">Hash</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Lookup Time</td>
+<td align="center">O(log(n))</td>
+<td align="center">O(log(1))</td>
+</tr>
+<tr>
+<td align="left">Insertion Time</td>
+<td align="center">O(log(n))</td>
+<td align="center">O(log(1))</td>
+</tr>
+<tr>
+<td align="left">Deletion Time</td>
+<td align="center">O(log(n))</td>
+<td align="center">O(log(1))</td>
+</tr>
+</tbody>
+</table>
+<p>Recently, the log-structured merge tree (LSM-tree) has attracted significant interest as a contender to B+-tree, because its data structure could enable better storage space usage efficiency. I'll investigate it further and make a post about it in the near future.</p>
+        </section>
+
+        <br><br><br>
+
+        <footer>
+          <div class="adjust-width">
+            <div id="author-block" class="w3-light-grey w3-border">
+              <div id="author-info">
+                <a href="https://github.com/hoangquochung1110"><img class="avatar" src="https://hlogs-bucket.s3.ap-southeast-1.amazonaws.com/IMG_7897.jpg" onerror="this.src='theme/images/avatar.png'" alt="Avatar"></a>
+                <div style="margin-left: 20px;">
+                  <a href="https://github.com/hoangquochung1110"><span id="author-name" class="w3-hover-text-dark-grey">Hung Hoang</span></a>
+                  <p id="author-story">Hello world! My name is Quoc-Hung Hoang. I'm a software developer. I have special interests in web development, database and software design.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <br><br><br>
+
+          <p style="font-size:10pt; font-style: italic;">Did you like this article? Share it with your friends!</p>
+          <div id="share" class="share">
+            <a href="https://www.facebook.com/sharer.php?u=http%3A//localhost%3A8000/database-index.html&amp;t=Hung%20Hoang%3A%20Database%20Index" target="_blank" class="w3-btn w3-indigo">
+              <i class="fa fa-facebook"></i> <span>Facebook</span>
+            </a>
+            <a href="https://twitter.com/share?url=http%3A//localhost%3A8000/database-index.html&amp;text=Hung%20Hoang%3A%20Database%20Index" target="_blank" class="w3-btn w3-blue">
+              <i class="fa fa-twitter"></i> <span>Twitter</span>
+            </a>
+          </div>
+
+          <br><br><br>
+
+
+
+        </footer>
+      </div>
+    </article>
+
+
+    <footer id="footer">
+      <div id="footer-copyright" class="w3-center w3-small w3-text-grey w3-padding-48">
+        <span>
+          &copy;
+          Hung Hoang
+        </span>
+      </div>
+    </footer>
+
+
+
+  </body>
+</html>
