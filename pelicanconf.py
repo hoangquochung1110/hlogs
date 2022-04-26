@@ -40,3 +40,4 @@ AUTHOR_DESCRIPTION = u"Hello world! My name is Quoc-Hung Hoang. I'm a software d
 AUTHOR_AVATAR = 'https://hlogs-bucket.s3.ap-southeast-1.amazonaws.com/IMG_7897.jpg'
 AUTHOR_WEB = 'https://github.com/hoangquochung1110'
 DISPLAY_PAGES_ON_MENU = True
+DISPLAY_CATEGORIES_ON_MENU = False
