@@ -1,6 +1,6 @@
 AUTHOR = 'Hung Hoang'
 SITENAME = "Hung Hoang"
-SITEURL = 'http://localhost:8000'
+SITEURL = 'https://hoangquochung1110.github.io/hlogs/'
 
 PATH = 'content'
 
