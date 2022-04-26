@@ -4,9 +4,7 @@ Category: Database
 
 People is often said that indexing is a go-to technique to process efficiently queries in database. This post is for summarizing what database index is and revisiting hash and B+Tree.
 
-Index is a data structure that organizes data records on disk to optimize certain kinds of retrieval operations. We may create index on a field of the table then retrieve all records that satisfy search conditions on `search-key` field. Without index, our query would end up scanning linearly the entire content of the table to fetch only one or a few records.
-
-Basic concepts/terms used in indexing like: `search-key`, `ordered-indices` or `hash-indices` can be found at [here](https://www2.cs.sfu.ca/CourseCentral/354/zaiane/material/notes/Chapter11/node2.html)
+Index is a data structure that organizes records to optimize certain kinds of retrieval operations. We may create index on a field of the table then retrieve all records that satisfy search conditions on `search-key` field. Without index, our query would end up scanning linearly the entire content of the table to fetch only one or a few records.
 
 In this post, I'd like to summarize the performance and use cases of two common indexing techniques: **Hash index** and **B+tree**
 
@@ -41,7 +39,7 @@ B+Tree is a standard index implementation in almost all relational database syst
 
 B+Tree is basically a M-way search tree that have the following structure:
 
-- perfectly balance: leaf nodes have the same height.
+- perfectly balance: leaf nodes always have the same height.
 - every inner node other than the root is at least half full (M/2 − 1 <= num of keys <= M − 1).
 - every inner node with k keys has k+1 non-null children.
 
@@ -66,9 +64,9 @@ In general, search-key can be duplicate, to solve this, most database implementa
 ### Pros
 There're two major pros that B+tree offers:
 
-- Minimizing I/O operations which is real deal since I/O accesses are expensive. A reason for this advantage:
+- Minimizing I/O operations:
 
-    * Reduced height: B+Tree has quite large [branching factor](https://en.wikipedia.org/wiki/Branching_factor) which makes the tree fat and short. The figure below illustrates a B+Tree with height of 2. As we can see nodes are spread out, it takes fewer nodes, less disk-access to traverse down to a leaf.
+    * Reduced height: B+Tree has quite large [branching factor](https://en.wikipedia.org/wiki/Branching_factor) which makes the tree fat and short. The figure below illustrates a B+Tree with height of 2. As we can see nodes are spread out, it takes fewer nodes to traverse down to a leaf. The cost of looking up a single value is the height of the tree + 1 for the random access to the table
 
 - Scalability:
 
@@ -83,4 +81,11 @@ There're two major pros that B+tree offers:
 ## Conclusion
 Although hash index performs better in terms of exact match queries, B+Tree is arguably the most widely used index structure in RDBMS thanks to its consistent performance in overall and high scalability.
 
-Recently, the log-structured merge tree (LSM-tree) has attracted significant interest as a contender to B+-tree, because its data structure could enable better storage space usage efficiency.
+|               | B+Tree    | Hash      |
+| :---          | :----:    | :---:     |
+| Lookup Time   | O(log(n)) | O(log(1)) |
+| Insertion Time| O(log(n)) | O(log(1)) |
+| Deletion Time | O(log(n)) | O(log(1)) |
+
+
+Recently, the log-structured merge tree (LSM-tree) has attracted significant interest as a contender to B+-tree, because its data structure could enable better storage space usage efficiency. I'll investigate it further and make a post about it in the near future.

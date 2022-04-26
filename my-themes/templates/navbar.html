@@ -1,0 +1,10 @@
+<nav class="navbar">
+    <p id="site-name">
+        <a href="/">{{SITENAME}}</a>
+    </p>
+    <ul>
+        {% for p in pages %}
+            <li>{{p.title}}</a>
+        {% endfor %}
+    </ul>
+</nav>
