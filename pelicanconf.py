@@ -33,9 +33,10 @@ DEFAULT_PAGINATION = 10
 THEME = "./minimal-xy-minimalxy"
 
 # *---theme-specific settings---*
+# source: https://github.com/petrnohejl/minimal-xy
 # Author
-AUTHOR_INTRO = u'Hello world! I’m Quoc-Hung Hoang - a Python developer living in Ho Chi Minh city, Vietnam'
-AUTHOR_DESCRIPTION = u'Hello world! I’m John Doe. I like coffee, birds and Python.'
+AUTHOR_INTRO = u"Hello world! I’m Quoc-Hung Hoang - a Python developer living in Ho Chi Minh city, Vietnam"
+AUTHOR_DESCRIPTION = u"Hello world! My name is Quoc-Hung Hoang. I'm a software developer. I have special interests in web development, database and software design."
 AUTHOR_AVATAR = 'https://hlogs-bucket.s3.ap-southeast-1.amazonaws.com/IMG_7897.jpg'
 AUTHOR_WEB = 'https://github.com/hoangquochung1110'
 DISPLAY_PAGES_ON_MENU = True
