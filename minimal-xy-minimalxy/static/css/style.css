@@ -1,3 +1,9 @@
+/* CSS variables */
+:root{
+  --lighter-mint: #32A9741a; 
+  --bold-green: #32A974;
+}
+
 /* Global */
 
 body {
@@ -346,4 +352,12 @@ ul.social li a:hover {
   #share a span {
     display: inline;
   }
+}
+
+.light-mint-bg{
+  background-color: var(--lighter-mint);
+}
+
+.bottombar{
+  border-bottom: 3px solid var(--bold-green)!important;
 }

@@ -1,6 +1,7 @@
 AUTHOR = 'Hung Hoang'
 SITENAME = "Hung Hoang"
-SITEURL = 'https://hoangquochung1110.github.io/hlogs/'
+# SITEURL = 'https://hoangquochung1110.github.io/hlogs/'
+SITEURL = ""
 
 PATH = 'content'
 
