@@ -87,7 +87,7 @@
     <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/theme/css/w3.css">
     <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/theme/css/style.css">
     <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/theme/css/jqcloud.css">
-    <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/theme/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/theme/css/font-awesome.min.css"> -->
     <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/theme/css/pygments-highlight-github.css">
     {% if MINIMALXY_CUSTOM_CSS %}
     <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/{{ MINIMALXY_CUSTOM_CSS }}">
@@ -104,7 +104,7 @@
   </head>
 
   <body>
-    <div class="w3-row w3-card w3-white">
+    <div class="w3-row w3-card" style="background-color: #32A974;">
       <header id="header">
         {% if " " in AUTHOR %}
         <a href="{{ SITEURL }}" id="header-logo" title="Home">{{ AUTHOR[0] + AUTHOR[AUTHOR.index(" ")+1] }}</a>
@@ -115,13 +115,13 @@
           <ul>
             {% if DISPLAY_PAGES_ON_MENU %}
             {% for p in pages %}
-            <li class="w3-bottombar w3-border-white w3-hover-border-green{% if p==page %} active{% endif %}"><a href="{{ SITEURL }}/{{ p.url }}">{{ p.title }}</a></li>
+            <li class="bottombar w3-hover-border-white{% if p==page %} active{% endif %}"><a href="{{ SITEURL }}/{{ p.url }}">{{ p.title }}</a></li>
             {% endfor %}
             {% endif %}
             {% if DISPLAY_CATEGORIES_ON_MENU %}
             {% for cat, null in categories %}
             {% if cat != DEFAULT_CATEGORY %}
-            <li class="w3-bottombar w3-border-white w3-hover-border-green" {% if cat == category %}style="font-weight: bold;"{% endif %}><a href="{{ SITEURL }}/{{ cat.url }}">{{ cat }}</a></li>
+            <li class="bottombar w3-border-white w3-hover-border-green" {% if cat == category %}style="font-weight: bold;"{% endif %}><a href="{{ SITEURL }}/{{ cat.url }}">{{ cat }}</a></li>
             {% endif %}
             {% endfor %}
             {% endif %}
