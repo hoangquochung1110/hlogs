@@ -8,11 +8,11 @@
 
     {% block content %}
 
-    <br><br><br>
+    <br>
 
     <section id="listing">
       {% for article in articles_page.object_list %}
-      <article class="w3-container w3-card-2 w3-white col-main">
+      <article class="w3-container col-main">
         <header>
           {% if article.headerimage %}
           <div class="headerimage-card">
