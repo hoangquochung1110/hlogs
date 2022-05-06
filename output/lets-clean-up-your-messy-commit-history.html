@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Let's clean up your messy commit history &ndash; Hung Hoang</title>
+
+    <!-- Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Social -->
+    <meta property="article:author" content="Hung Hoang" />
+    <meta property="article:section" content="Git" />
+    <meta property="article:published_time" content="2022-05-06" />
+
+    <meta property="og:type" content="article"/>
+    <meta property="og:title" content="Let's clean up your messy commit history"/>
+    <meta property="og:description" content="Do you have readable Git commit history ? Reuse the most recent commit message with git commit --amend Recall back to the time when I haven&#39;t been familiarized with code quality assurance (aka linters), I very often failed those linter checks. As a result, there were commit messages look like this …"/>
+    <meta property="og:site_name" content="Hung Hoang" />
+    <meta property="og:url" content="https://hoangquochung1110.github.io/hlogs/lets-clean-up-your-messy-commit-history.html"/>
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Let's clean up your messy commit history">
+    <meta name="twitter:description" content="Do you have readable Git commit history ? Reuse the most recent commit message with git commit --amend Recall back to the time when I haven&#39;t been familiarized with code quality assurance (aka linters), I very often failed those linter checks. As a result, there were commit messages look like this …">
+    <meta name="twitter:url" content="https://hoangquochung1110.github.io/hlogs/lets-clean-up-your-messy-commit-history.html">
+
+    <!-- Feed -->
+
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:regular,bold">
+    <link rel="stylesheet" type="text/css" href="https://hoangquochung1110.github.io/hlogs/theme/css/w3.css">
+    <link rel="stylesheet" type="text/css" href="https://hoangquochung1110.github.io/hlogs/theme/css/style.css">
+    <link rel="stylesheet" type="text/css" href="https://hoangquochung1110.github.io/hlogs/theme/css/jqcloud.css">
+    <!-- <link rel="stylesheet" type="text/css" href="https://hoangquochung1110.github.io/hlogs/theme/css/font-awesome.min.css"> -->
+    <link rel="stylesheet" type="text/css" href="https://hoangquochung1110.github.io/hlogs/theme/css/pygments-highlight-github.css">
+
+    <!-- Icon -->
+
+    <!-- JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://hoangquochung1110.github.io/hlogs/theme/js/jqcloud.min.js"></script>
+  </head>
+
+  <body>
+    <div class="w3-row w3-card" style="background-color: #32A974;">
+      <header id="header">
+        <a href="https://hoangquochung1110.github.io/hlogs" id="header-logo" title="Home">HH</a>
+        <nav id="header-menu">
+          <ul>
+            <li class="bottombar w3-hover-border-white"><a href="https://hoangquochung1110.github.io/hlogs/pages/about.html">About</a></li>
+            <li class="bottombar w3-hover-border-white"><a href="https://hoangquochung1110.github.io/hlogs/pages/contact.html">Contact</a></li>
+          </ul>
+        </nav>
+      </header>
+    </div>
+
+
+
+    <br>
+
+    <article>
+      <header class="w3-container col-main">
+        <h1>Let's clean up your messy commit history</h1>
+        <div class="post-info">
+          <div class="w3-opacity w3-margin-right w3-margin-bottom" style="flex-grow: 1;">
+            <span><time datetime="2022-05-06T10:00:00+07:00">Fri 06 May 2022</time> in <a href="https://hoangquochung1110.github.io/hlogs/category/git.html" title="All articles in category Git">Git</a></span>
+          </div>
+        </div>
+      </header>
+
+      <br>
+
+
+      <div class="col-main w3-container">
+        <section id="content">
+          <h2>Do you have readable Git commit history ?</h2>
+<h3>Reuse the most recent commit message with <code>git commit --amend</code></h3>
+<p>Recall back to the time when I haven't been familiarized with code quality assurance (aka linters), I very often failed those linter checks. As a result, there were commit messages look like this</p>
+<div class="highlight"><pre><span></span><code>$ git commit -m <span class="s2">&quot;Improve code style&quot;</span>
+</code></pre></div>
+
+<p>The command is tedious and the message does not provide any meaningful information. Then <code>git commit --amend --no-edit</code> comes into play. It allows you to reuse your last commit message for the current commit.
+Suppose you want to remove trailing white space in <code>apps/users/views.py</code>:</p>
+<div class="highlight"><pre><span></span><code>$ git add apps/users/views.py apps/users/serializers.py
+$ git commit -m <span class="s2">&quot;Provide UserViewSet&quot;</span>
+$ git add apps/users/views.py
+$ git commit --amend --no-edit
+</code></pre></div>
+
+<h3>Clean up lengthy commit history with <code>git rebase</code></h3>
+<p>During my feature branch workflow, it's very often to have several commits as a result of code review or 
+I have to leave the task till the next day.</p>
+<p>At the end of the task, my commit history may end up this like</p>
+<div class="highlight"><pre><span></span><code><span class="p">(</span><span class="n">cs50w</span><span class="o">-</span><span class="n">network</span><span class="p">)</span><span class="w"> </span><span class="n">hunghoang</span><span class="nv">@MacBook</span><span class="o">-</span><span class="n">Pro</span><span class="w"> </span><span class="n">project4</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="nf">log</span><span class="w"> </span><span class="o">--</span><span class="n">oneline</span><span class="w"></span>
+<span class="mi">58701</span><span class="n">f5</span><span class="w"> </span><span class="p">(</span><span class="n">HEAD</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">feature</span><span class="o">/</span><span class="n">migrate</span><span class="o">-</span><span class="k">to</span><span class="o">-</span><span class="n">htmx</span><span class="o">-</span><span class="n">alpinejs</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="o">/</span><span class="n">feature</span><span class="o">/</span><span class="n">migrate</span><span class="o">-</span><span class="k">to</span><span class="o">-</span><span class="n">htmx</span><span class="o">-</span><span class="n">alpinejs</span><span class="p">)</span><span class="w"> </span><span class="n">Remove</span><span class="w"> </span><span class="n">unused</span><span class="w"> </span><span class="n">vanilla</span><span class="w"> </span><span class="n">js</span><span class="w"></span>
+<span class="n">bf2f1b7</span><span class="w"> </span><span class="n">Fix</span><span class="w"> </span><span class="n">navbar</span><span class="w"> </span><span class="n">offsetHeight</span><span class="w"></span>
+<span class="n">c798ff0</span><span class="w"> </span><span class="n">minor</span><span class="w"> </span><span class="n">change</span><span class="w"></span>
+<span class="mi">05</span><span class="n">c3b93</span><span class="w"> </span><span class="n">Provide</span><span class="w"> </span><span class="n">separate</span><span class="w"> </span><span class="n">api</span><span class="w"> </span><span class="n">directory</span><span class="w"></span>
+<span class="mi">202</span><span class="n">f666</span><span class="w"> </span><span class="n">Disable</span><span class="w"> </span><span class="n">follow</span><span class="o">-</span><span class="n">btn</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="k">host</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="n">timeline</span><span class="w"></span>
+<span class="mi">93</span><span class="n">b22fd</span><span class="w"> </span><span class="n">Support</span><span class="w"> </span><span class="n">followers_count</span><span class="w"> </span><span class="k">update</span><span class="w"></span>
+<span class="mf">93e8647</span><span class="w"> </span><span class="n">Improve</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">feature</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">prevent</span><span class="w"> </span><span class="n">editing</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">post</span><span class="w"> </span><span class="n">simultaneously</span><span class="w"></span>
+<span class="n">e4e5aa5</span><span class="w"> </span><span class="n">Reuse</span><span class="w"> </span><span class="n">PostViewSet</span><span class="w"></span>
+<span class="mi">88</span><span class="n">b55b9</span><span class="w"> </span><span class="n">Refine</span><span class="w"> </span><span class="n">post</span><span class="o">/</span><span class="n">list</span><span class="p">.</span><span class="n">html</span><span class="w"></span>
+<span class="mi">09</span><span class="n">b9acf</span><span class="w"> </span><span class="n">Re</span><span class="o">-</span><span class="n">arrange</span><span class="w"> </span><span class="n">auth</span><span class="w"> </span><span class="n">templates</span><span class="w"></span>
+<span class="mi">0250</span><span class="n">ecb</span><span class="w"> </span><span class="n">Re</span><span class="o">-</span><span class="n">arrange</span><span class="w"> </span><span class="n">template</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">project</span><span class="o">-</span><span class="k">level</span><span class="w"></span>
+<span class="mi">30</span><span class="n">ae17b</span><span class="w"> </span><span class="n">Integrate</span><span class="w"> </span><span class="n">htmx</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">post</span><span class="o">/</span><span class="n">list</span><span class="p">.</span><span class="n">html</span><span class="w"></span>
+</code></pre></div>
+
+<p>These logs of changes are important while the feature is in development phase but they looks scattered and unnessary when looking through entire history of the <code>main</code> branch. Squashing commits not only make commit history neater so that others can understand but also easy to resolve conflicts at once when I <code>git merge</code> afterwards.</p>
+<p><strong>First</strong>, make sure you're at the feature-branch:</p>
+<div class="highlight"><pre><span></span><code>$ git switch feature-branch
+</code></pre></div>
+
+<p><strong>Second</strong>, use rebase to squash the branch on top of its original base commit:</p>
+<div class="highlight"><pre><span></span><code>$ git rebase --keep-base -i main
+</code></pre></div>
+
+<p>What are these flag for ?
+<a href="https://git-scm.com/docs/git-rebase"><code>--keep-base</code></a> flag to tell git rebase on to the base commit from <code>main</code> which feature-branch was branched off.
+<code>-i</code> stands for interactive which enables rebase <a href="https://git-scm.com/docs/git-rebase#_interactive_mode">interactive mode</a>. This will open your text editor with a file you can use to select rebase operations.</p>
+<p><strong>Third</strong>, change the rebase file to squash all commits into the first one
+Please notice when rebasing, commits are listed in the opposite order when compared to using <code>git log</code></p>
+<div class="highlight"><pre><span></span><code><span class="nt">pick</span><span class="w"> </span><span class="nt">30ae17b</span><span class="w"> </span><span class="nt">Integrate</span><span class="w"> </span><span class="nt">htmx</span><span class="w"> </span><span class="nt">into</span><span class="w"> </span><span class="nt">post</span><span class="o">/</span><span class="nt">list</span><span class="p">.</span><span class="nc">html</span><span class="w"></span>
+<span class="nt">pick</span><span class="w"> </span><span class="nt">93e8647</span><span class="w"> </span><span class="nt">Improve</span><span class="w"> </span><span class="nt">the</span><span class="w"> </span><span class="nt">feature</span><span class="w"> </span><span class="nt">of</span><span class="w"> </span><span class="nt">prevent</span><span class="w"> </span><span class="nt">editing</span><span class="w"> </span><span class="nt">2</span><span class="w"> </span><span class="nt">post</span><span class="w"> </span><span class="nt">simultaneously</span><span class="w"></span>
+<span class="nt">pick</span><span class="w"> </span><span class="nt">93b22fd</span><span class="w"> </span><span class="nt">Support</span><span class="w"> </span><span class="nt">followers_count</span><span class="w"> </span><span class="nt">update</span><span class="w"></span>
+<span class="nt">pick</span><span class="w"> </span><span class="nt">202f666</span><span class="w"> </span><span class="nt">Disable</span><span class="w"> </span><span class="nt">follow-btn</span><span class="w"> </span><span class="nt">on</span><span class="w"> </span><span class="nt">host</span><span class="w"> </span><span class="nt">user</span><span class="w"> </span><span class="nt">timeline</span><span class="w"></span>
+<span class="nt">pick</span><span class="w"> </span><span class="nt">05c3b93</span><span class="w"> </span><span class="nt">Provide</span><span class="w"> </span><span class="nt">separate</span><span class="w"> </span><span class="nt">api</span><span class="w"> </span><span class="nt">directory</span><span class="w"></span>
+<span class="nt">pick</span><span class="w"> </span><span class="nt">c798ff0</span><span class="w"> </span><span class="nt">minor</span><span class="w"> </span><span class="nt">change</span><span class="w"></span>
+<span class="nt">pick</span><span class="w"> </span><span class="nt">bf2f1b7</span><span class="w"> </span><span class="nt">Fix</span><span class="w"> </span><span class="nt">navbar</span><span class="w"> </span><span class="nt">offsetHeight</span><span class="w"></span>
+<span class="nt">pick</span><span class="w"> </span><span class="nt">f98b90a</span><span class="w"> </span><span class="nt">Remove</span><span class="w"> </span><span class="nt">unused</span><span class="w"> </span><span class="nt">vanilla</span><span class="w"> </span><span class="nt">js</span><span class="w"></span>
+
+<span class="err">#</span><span class="w"> </span><span class="nt">Rebase</span><span class="w"> </span><span class="nt">3349b96</span><span class="o">.</span><span class="p">.</span><span class="nc">f98b90a</span><span class="w"> </span><span class="nt">onto</span><span class="w"> </span><span class="nt">8b92fd6</span><span class="w"> </span><span class="o">(</span><span class="nt">12</span><span class="w"> </span><span class="nt">commands</span><span class="o">)</span><span class="w"></span>
+<span class="err">#</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="nt">Commands</span><span class="o">:</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="nt">p</span><span class="o">,</span><span class="w"> </span><span class="nt">pick</span><span class="w"> </span><span class="o">&lt;</span><span class="nt">commit</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">use</span><span class="w"> </span><span class="nt">commit</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="nt">r</span><span class="o">,</span><span class="w"> </span><span class="nt">reword</span><span class="w"> </span><span class="o">&lt;</span><span class="nt">commit</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">use</span><span class="w"> </span><span class="nt">commit</span><span class="o">,</span><span class="w"> </span><span class="nt">but</span><span class="w"> </span><span class="nt">edit</span><span class="w"> </span><span class="nt">the</span><span class="w"> </span><span class="nt">commit</span><span class="w"> </span><span class="nt">message</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="nt">e</span><span class="o">,</span><span class="w"> </span><span class="nt">edit</span><span class="w"> </span><span class="o">&lt;</span><span class="nt">commit</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">use</span><span class="w"> </span><span class="nt">commit</span><span class="o">,</span><span class="w"> </span><span class="nt">but</span><span class="w"> </span><span class="nt">stop</span><span class="w"> </span><span class="nt">for</span><span class="w"> </span><span class="nt">amendingx</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="nt">s</span><span class="o">,</span><span class="w"> </span><span class="nt">squash</span><span class="w"> </span><span class="o">&lt;</span><span class="nt">commit</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">use</span><span class="w"> </span><span class="nt">commit</span><span class="o">,</span><span class="w"> </span><span class="nt">but</span><span class="w"> </span><span class="nt">meld</span><span class="w"> </span><span class="nt">into</span><span class="w"> </span><span class="nt">previous</span><span class="w"> </span><span class="nt">commit</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="nt">f</span><span class="o">,</span><span class="w"> </span><span class="nt">fixup</span><span class="w"> </span><span class="cp">[</span><span class="na">-C</span> <span class="o">|</span> <span class="na">-c</span><span class="cp">]</span><span class="w"> </span><span class="o">&lt;</span><span class="nt">commit</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">like</span><span class="w"> </span><span class="s2">&quot;squash&quot;</span><span class="w"> </span><span class="nt">but</span><span class="w"> </span><span class="nt">keep</span><span class="w"> </span><span class="nt">only</span><span class="w"> </span><span class="nt">the</span><span class="w"> </span><span class="nt">previous</span><span class="w"></span>
+<span class="err">#</span><span class="w">                    </span><span class="nt">commit</span><span class="s1">&#39;s log message, unless -C is used, in which case</span>
+<span class="s1">#                    keep only this commit&#39;</span><span class="nt">s</span><span class="w"> </span><span class="nt">message</span><span class="o">;</span><span class="w"> </span><span class="nt">-c</span><span class="w"> </span><span class="nt">is</span><span class="w"> </span><span class="nt">same</span><span class="w"> </span><span class="nt">as</span><span class="w"> </span><span class="nt">-C</span><span class="w"> </span><span class="nt">but</span><span class="w"></span>
+<span class="err">#</span><span class="w">                    </span><span class="nt">opens</span><span class="w"> </span><span class="nt">the</span><span class="w"> </span><span class="nt">editor</span><span class="w"></span>
+<span class="o">...</span><span class="w"></span>
+</code></pre></div>
+
+<p>(Further comments removed for brevity.)</p>
+<p>The block of comments below commits is the mini cheatsheet of possible operations
+To tell squash all commits into the first one, let's change all the commit lines except the first one with <code>f</code>:</p>
+<div class="highlight"><pre><span></span><code>pick 30ae17b Integrate htmx into post/list.html
+f 93e8647 Improve the feature of prevent editing 2 post simultaneously
+f 93b22fd Support followers_count update
+f 202f666 Disable follow-btn on host user timeline
+f 05c3b93 Provide separate api directory
+f c798ff0 minor change
+f bf2f1b7 Fix navbar offsetHeight
+f f98b90a Remove unused vanilla js
+
+# Rebase 3349b96..f98b90a onto 8b92fd6 (12 commands)
+#
+# Commands:
+</code></pre></div>
+
+<p><strong>Fourth</strong>, save and close the file, and Git will perform the squashing. Upon completion, let's <code>git log --oneline</code> to see the result.</p>
+<p><strong>Fifth</strong>, you may want to pull the latest version of your main branch then merge <code>feature-branch</code></p>
+<h3>Conclusion</h3>
+<p><code>git commit --amend --no-edit</code> and <code>git rebase --keep-base -i main</code> are two of most used Git command I take advantage of during feature branch workflow. Hope they can help you.</p>
+        </section>
+
+        <br><br><br>
+
+        <footer>
+          <div class="adjust-width">
+            <div id="author-block" class="w3-light-grey w3-border">
+              <div id="author-info">
+                <a href="https://github.com/hoangquochung1110"><img class="avatar" src="https://hlogs-bucket.s3.ap-southeast-1.amazonaws.com/IMG_7897.jpg" onerror="this.src='theme/images/avatar.png'" alt="Avatar"></a>
+                <div style="margin-left: 20px;">
+                  <a href="https://github.com/hoangquochung1110"><span id="author-name" class="w3-hover-text-dark-grey">Hung Hoang</span></a>
+                  <p id="author-story">Hello world! My name is Quoc-Hung Hoang. I'm a software developer. I have special interests in web development, database and software design.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <br><br><br>
+
+          <p style="font-size:10pt; font-style: italic;">Did you like this article? Share it with your friends!</p>
+          <div id="share" class="share">
+            <a href="https://www.facebook.com/sharer.php?u=https%3A//hoangquochung1110.github.io/hlogs/lets-clean-up-your-messy-commit-history.html&amp;t=Hung%20Hoang%3A%20Let%27s%20clean%20up%20your%20messy%20commit%20history" target="_blank" class="w3-btn w3-indigo">
+              <i class="fa fa-facebook"></i> <span>Facebook</span>
+            </a>
+            <a href="https://twitter.com/share?url=https%3A//hoangquochung1110.github.io/hlogs/lets-clean-up-your-messy-commit-history.html&amp;text=Hung%20Hoang%3A%20Let%27s%20clean%20up%20your%20messy%20commit%20history" target="_blank" class="w3-btn w3-blue">
+              <i class="fa fa-twitter"></i> <span>Twitter</span>
+            </a>
+          </div>
+
+          <br><br><br>
+
+
+
+        </footer>
+      </div>
+    </article>
+
+
+    <footer id="footer">
+      <div id="footer-copyright" class="w3-center w3-small w3-text-grey w3-padding-48">
+        <span>
+          &copy;
+          Hung Hoang
+        </span>
+      </div>
+    </footer>
+
+
+
+  </body>
+</html>
