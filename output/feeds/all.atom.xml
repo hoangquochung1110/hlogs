@@ -91,7 +91,147 @@ f f98b90a Remove unused vanilla js
 &lt;p&gt;&lt;strong&gt;Fourth&lt;/strong&gt;, save and close the file, and Git will perform the squashing. Upon completion, let's &lt;code&gt;git log --oneline&lt;/code&gt; to see the result.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Fifth&lt;/strong&gt;, you may want to pull the latest version of your main branch then merge &lt;code&gt;feature-branch&lt;/code&gt;&lt;/p&gt;
 &lt;h3&gt;Conclusion&lt;/h3&gt;
-&lt;p&gt;&lt;code&gt;git commit --amend --no-edit&lt;/code&gt; and &lt;code&gt;git rebase --keep-base -i main&lt;/code&gt; are two of most used Git command I take advantage of during feature branch workflow. Hope they can help you.&lt;/p&gt;</content><category term="Git"></category></entry><entry><title>Database Index</title><link href="hunghoang/database-index.html" rel="alternate"></link><published>2021-11-30T10:00:00+07:00</published><updated>2021-11-30T10:00:00+07:00</updated><author><name>Hung Hoang</name></author><id>tag:None,2021-11-30:hunghoang/database-index.html</id><summary type="html">&lt;p&gt;People is often said that indexing is a go-to technique to process efficiently queries in database. This post is for summarizing what database index is and revisiting hash and B+Tree.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git commit --amend --no-edit&lt;/code&gt; and &lt;code&gt;git rebase --keep-base -i main&lt;/code&gt; are two of most used Git command I take advantage of during feature branch workflow. Hope they can help you.&lt;/p&gt;</content><category term="Git"></category></entry><entry><title>How Django meets htmx : A quick tour of modern server side rendering.</title><link href="hunghoang/how-django-meets-htmx-a-quick-tour-of-modern-server-side-rendering.html" rel="alternate"></link><published>2022-03-10T10:00:00+07:00</published><updated>2022-03-10T10:00:00+07:00</updated><author><name>Hung Hoang</name></author><id>tag:None,2022-03-10:hunghoang/how-django-meets-htmx-a-quick-tour-of-modern-server-side-rendering.html</id><summary type="html">&lt;h3&gt;htmx&lt;/h3&gt;
+&lt;p&gt;The philosophy of htmx is to write less Javascript code, this library gives you access to modern browser features such as AJAX, CSS Transitions, WebSockets and Server Sent Events directly in HTML, using attributes like &lt;code&gt;hx-get&lt;/code&gt; or &lt;code&gt;hx-trigger&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;A few considerable features of htmx:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Any element, not just anchor …&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;h3&gt;htmx&lt;/h3&gt;
+&lt;p&gt;The philosophy of htmx is to write less Javascript code, this library gives you access to modern browser features such as AJAX, CSS Transitions, WebSockets and Server Sent Events directly in HTML, using attributes like &lt;code&gt;hx-get&lt;/code&gt; or &lt;code&gt;hx-trigger&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;A few considerable features of htmx:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Any element, not just anchor tag or form can issue an HTTP request.&lt;/li&gt;
+&lt;li&gt;Any event, not just form or button can trigger requests.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The quick demo below illustrate how to make POST request to create/update data on a dynamic page.&lt;/p&gt;
+&lt;h4&gt;Context&lt;/h4&gt;
+&lt;p&gt;You want to update the user profile with a form. A POST request is sent when the form is submitted.
+The input should be validated and new data should be automatically updated after form submission.&lt;/p&gt;
+&lt;p&gt;Simplified project structure:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;manage.py
+users/
+    views.py
+    urls.py
+templates/
+    users/
+         profile.html
+         password_update.html
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2&gt;STEP 1: Install htmx and render a form that displays input fields&lt;/h2&gt;
+&lt;p&gt;Insert this script into profile.html template, detailed installation instructions can be found &lt;a href="https://htmx.org/docs/#installing"&gt;here&lt;/a&gt;. I'll skip the profile page for the sake of a brief tutorial.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;password_update.html&lt;/code&gt; is a &lt;strong&gt;fragment&lt;/strong&gt; instead of a full html file. A view that responses a fragment html is the key technique helps htmx render element dynamically.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="cm"&gt;&amp;lt;!-- password_update.html --&amp;gt;&lt;/span&gt;
+
+&lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;form&lt;/span&gt; &lt;span class="na"&gt;hx-post&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;{% url &amp;#39;user-password-update&amp;#39; %}&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;hx-swap&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;outerHTML&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+    {% csrf_token %}
+    &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt; &lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;form-group&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt; &lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;row my-2&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt; &lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;col&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;label&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;Old password:&lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;label&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+                {{form.old_password}}
+                {% for error in form.old_password.errors %}
+                    &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt; &lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;error-feedback&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;{{error}}&lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+                {% endfor %}
+            &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt; &lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;row my-2&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt; &lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;col&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;label&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;New password:&lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;label&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+                {{form.new_password1}}
+                {% for error in form.new_password1.errors %}
+                    &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt; &lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;error-feedback&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;{{error}}&lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+                {% endfor %}
+            &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt; &lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;row my-2&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt; &lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;col&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;label&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;Confirm password:&lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;label&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+                {{form.new_password2}}
+                {% for error in form.new_password2.errors %}
+                    &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt; &lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;error-feedback&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;{{error}}&lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+                {% endfor %}
+            &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;input&lt;/span&gt; &lt;span class="na"&gt;type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;submit&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;value&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Save&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;btn btn-primary mt-3&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;form&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This form tag tells &lt;code&gt;htmx&lt;/code&gt;:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Once form is submitted, issue an HTTP POST request to user-password-update url then replace entire target element with the content of the response dynamically.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;code&gt;hx-post&lt;/code&gt; is basically like the standard &lt;code&gt;action&lt;/code&gt; attribute which tells browser where to send data to. In this case to &lt;code&gt;user-password-update&lt;/code&gt; url.&lt;/p&gt;
+&lt;p&gt;The second attribute &lt;code&gt;hx-swap&lt;/code&gt; describe the way how htmx swap the HTML code returned by Django view onto the page. &lt;code&gt;outerHTML&lt;/code&gt; in this case means entire form itself.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;hx-target&lt;/code&gt; is usually paired with &lt;code&gt;hx-swap&lt;/code&gt; if you want to load the response into a different element other than the one triggering request. A popular example is that you submit a &lt;code&gt;TaskCreateForm&lt;/code&gt; then append the newly-created task to a &lt;code&gt;ul&lt;/code&gt;  tag.&lt;/p&gt;
+&lt;p&gt;If &lt;code&gt;hx-target&lt;/code&gt; is not specified, its default value is the element that make the request.&lt;/p&gt;
+&lt;h2&gt;STEP 2: Write Django views that accepts request from browsers and handle the logic of password update.&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# views.py&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.views.generic&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;UpdateView&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;TemplateView&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.contrib.auth.forms&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;PasswordChangeForm&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;UserProfileView&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TemplateView&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Display current user profile data.&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+    &lt;span class="n"&gt;template_name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;users/profile/profile.html&amp;quot;&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_context_data&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Provide form to template for first-time loading.&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+        &lt;span class="n"&gt;context_data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;super&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_context_data&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;context_data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;form&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;PasswordChangeForm&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;context_data&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;PasswordChangeViewAdmin&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PasswordChangeView&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Allow change password for current user.&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+    &lt;span class="n"&gt;template_name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;users/profile/password_update.html&amp;quot;&lt;/span&gt;
+    &lt;span class="n"&gt;form_class&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;PasswordChangeForm&lt;/span&gt;
+    &lt;span class="n"&gt;success_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;reverse_lazy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;admin-login&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# urls.py&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;.&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;views&lt;/span&gt;
+
+&lt;span class="n"&gt;urlpatterns&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+    &lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;profile/&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;include&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;
+        &lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+            &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="n"&gt;views&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;UserProfileView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as_view&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt;
+            &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;user-profile&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="p"&gt;),&lt;/span&gt;
+        &lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+            &lt;span class="s2"&gt;&amp;quot;update/&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="n"&gt;views&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;UserProfileUpdateView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as_view&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt;
+            &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;user-profile-update&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="p"&gt;),&lt;/span&gt;
+    &lt;span class="p"&gt;])),&lt;/span&gt;
+&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;There are 2 possible outcome. If &lt;code&gt;PasswordChangeForm&lt;/code&gt; takes invalid data (two password does not match, for example), PasswordChangeViewAdmin return a response with &lt;code&gt;password_update.html&lt;/code&gt; fragment and the &lt;code&gt;PasswordChangeForm&lt;/code&gt; instance in the context data. htmx takes this fragment and load it on the page. As you're changing your old password so the page should dynamically re-render the form.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="htmx re-render form tag" src="https://dev-to-uploads.s3.amazonaws.com/uploads/articles/g5s0d9cfbllfbqj1zyaj.png"&gt;&lt;/p&gt;
+&lt;p&gt;The second scenario is that the data you submit is valid, according to the initial implementation of &lt;code&gt;PasswordChangeViewAdmin&lt;/code&gt;, it should return a response including the admin-login template. Now here comes the problem: the page is expected to load the admin-login page into the form tag. It does not make sense and not what we want to do.&lt;/p&gt;
+&lt;h2&gt;STEP 3: Redirect after successful form submission&lt;/h2&gt;
+&lt;p&gt;The solution to this circumstance is to modify the behavior of &lt;code&gt;hx-post&lt;/code&gt;, prevent it from swapping response onto the page. Instead we should redirect users to another page: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;PasswordChangeViewAdmin&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PasswordChangeView&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Allow change password for current user.&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+    &lt;span class="n"&gt;template_name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;users/profile/password_update.html&amp;quot;&lt;/span&gt;
+    &lt;span class="n"&gt;form_class&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;PasswordChangeForm&lt;/span&gt;
+    &lt;span class="n"&gt;success_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;reverse_lazy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;admin-login&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;form_valid&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Insert HX-Redirect attribute to response header.&lt;/span&gt;
+
+&lt;span class="sd"&gt;        The purpose is to modify htmx swapping mechanism&lt;/span&gt;
+&lt;span class="sd"&gt;        in case of successful update.&lt;/span&gt;
+&lt;span class="sd"&gt;        &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+        &lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;save&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;HttpResponse&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;HX-Redirect&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;reverse&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;admin-login&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;By this way, we tell htmx to redirect user to the login page to re-sign in rather than staying on the current page.&lt;/p&gt;
+&lt;p&gt;Hopefully this quick example gives you some inspirations of what htmx can do in combination with Django forms. It gives you ability to render elements without reloading page. More importantly, it can be achieved but not write a single line of Javascript code...&lt;/p&gt;</content><category term="Django"></category></entry><entry><title>Database Index</title><link href="hunghoang/database-index.html" rel="alternate"></link><published>2021-11-30T10:00:00+07:00</published><updated>2021-11-30T10:00:00+07:00</updated><author><name>Hung Hoang</name></author><id>tag:None,2021-11-30:hunghoang/database-index.html</id><summary type="html">&lt;p&gt;People is often said that indexing is a go-to technique to process efficiently queries in database. This post is for summarizing what database index is and revisiting hash and B+Tree.&lt;/p&gt;
 &lt;p&gt;Index is a data structure that organizes records to optimize certain kinds of retrieval operations. We may create index …&lt;/p&gt;</summary><content type="html">&lt;p&gt;People is often said that indexing is a go-to technique to process efficiently queries in database. This post is for summarizing what database index is and revisiting hash and B+Tree.&lt;/p&gt;
 &lt;p&gt;Index is a data structure that organizes records to optimize certain kinds of retrieval operations. We may create index on a field of the table then retrieve all records that satisfy search conditions on &lt;code&gt;search-key&lt;/code&gt; field. Without index, our query would end up scanning linearly the entire content of the table to fetch only one or a few records.&lt;/p&gt;
 &lt;p&gt;In this post, I'd like to summarize the performance and use cases of two common indexing techniques: &lt;strong&gt;Hash index&lt;/strong&gt; and &lt;strong&gt;B+tree&lt;/strong&gt;&lt;/p&gt;
